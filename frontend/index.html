@@ -1,0 +1,964 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f0f2f5;
+      color: #1a1a1a;
+      padding: 32px 16px;
+    }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .form-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-card h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #333;
+    }
+    .form-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 160px;
+      gap: 4px;
+    }
+    label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="url"],
+    textarea {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition:
+        border-color 0.15s,
+        box-shadow 0.15s;
+      width: 100%;
+      background: #fafafa;
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #5b8af0;
+      box-shadow: 0 0 0 3px rgba(91, 138, 240, 0.12);
+      background: #fff;
+    }
+
+    input.error,
+    textarea.error {
+      border-color: #e05252;
+    }
+    .error-msg {
+      font-size: 0.75rem;
+      color: #e05252;
+      min-height: 16px;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 5px;
+    }
+    .toolbar button {
+      border: 1px solid #e0e0e0;
+      background: #f5f5f5;
+      border-radius: 5px;
+      padding: 3px 10px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      color: #444;
+      transition: background 0.12s;
+    }
+    .toolbar button:hover {
+      background: #e8eeff;
+      border-color: #5b8af0;
+    }
+
+    .captcha-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 14px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .captcha-row img {
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      cursor: pointer;
+      height: 48px;
+    }
+
+    .file-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .file-label {
+      display: inline-block;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      background: #f5f5f5;
+      color: #444;
+      transition: background 0.12s;
+    }
+    .file-label:hover {
+      background: #e8eeff;
+    }
+    .file-name {
+      font-size: 0.82rem;
+      color: #888;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 9px 22px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition:
+        opacity 0.15s,
+        transform 0.1s;
+    }
+    .btn:active {
+      transform: scale(0.97);
+    }
+    .btn-primary {
+      background: #5b8af0;
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #4a79e0;
+    }
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #444;
+    }
+    .btn-secondary:hover {
+      background: #e4e4e4;
+    }
+
+    .preview-box {
+      border: 1px dashed #ccc;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-top: 12px;
+      background: #fafafa;
+      display: none;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .preview-box.visible {
+      display: block;
+    }
+    .preview-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #aaa;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .controls label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #666;
+    }
+    .controls select {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.85rem;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .ws-badge {
+      margin-left: auto;
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    .ws-badge.on {
+      background: #e6f9ee;
+      color: #2a9d5c;
+    }
+    .ws-badge.off {
+      background: #fdecea;
+      color: #c0392b;
+    }
+
+    .comments-wrap {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .comment {
+      padding: 18px 20px;
+      border-bottom: 1px solid #f2f2f2;
+    }
+    .comment:last-child {
+      border-bottom: none;
+    }
+
+    .comment-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #c9d4f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+      color: #5b8af0;
+    }
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .meta {
+      flex: 1;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .author {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #1a1a1a;
+    }
+    .date {
+      font-size: 0.78rem;
+      color: #aaa;
+    }
+
+    .comment-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .action-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      border: 1px solid #e8e8e8;
+      background: #f7f7f7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.7rem;
+      color: #888;
+      transition: background 0.12s;
+    }
+    .action-icon:hover {
+      background: #e8eeff;
+      color: #5b8af0;
+    }
+
+    .vote {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.82rem;
+      color: #888;
+    }
+    .vote button {
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: #aaa;
+      font-size: 0.85rem;
+      padding: 0 2px;
+      transition: color 0.12s;
+    }
+    .vote button:hover {
+      color: #5b8af0;
+    }
+
+    .quote {
+      border-left: 3px solid #c5d3f7;
+      padding: 4px 10px;
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+      color: #888;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      background: #f7f9ff;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .comment-text {
+      font-size: 0.92rem;
+      line-height: 1.65;
+      margin-bottom: 8px;
+    }
+    .comment-text a {
+      color: #5b8af0;
+    }
+    .comment-text code {
+      background: #f0f2f5;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 0.88em;
+    }
+
+    .comment-image {
+      margin-bottom: 8px;
+    }
+    .comment-image img {
+      max-width: 320px;
+      max-height: 240px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .comment-file a {
+      font-size: 0.83rem;
+      color: #5b8af0;
+      text-decoration: none;
+    }
+    .comment-file a:hover {
+      text-decoration: underline;
+    }
+
+    .reply-btn {
+      font-size: 0.8rem;
+      color: #5b8af0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      margin-top: 2px;
+      font-family: inherit;
+    }
+    .reply-btn:hover {
+      text-decoration: underline;
+    }
+
+    .replies {
+      margin-top: 10px;
+      margin-left: 24px;
+      padding-left: 16px;
+      border-left: 2px solid #e8eeff;
+    }
+    .replies .comment {
+      padding: 14px 0;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    .replies .comment:last-child {
+      border-bottom: none;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      margin-top: 20px;
+    }
+    .pagination button {
+      border: 1px solid #e0e0e0;
+      background: #fff;
+      border-radius: 7px;
+      padding: 6px 13px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.12s;
+    }
+    .pagination button.active {
+      background: #5b8af0;
+      color: #fff;
+      border-color: #5b8af0;
+    }
+    .pagination button:hover:not(.active) {
+      background: #f0f4ff;
+    }
+
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.88);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+    }
+    .lightbox.open {
+      display: flex;
+    }
+    .lightbox img {
+      max-width: 92vw;
+      max-height: 92vh;
+      border-radius: 10px;
+      animation: pop 0.18s ease;
+    }
+    .lightbox-close {
+      position: fixed;
+      top: 18px;
+      right: 22px;
+      color: #fff;
+      font-size: 2rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    @keyframes pop {
+      from {
+        opacity: 0;
+        transform: scale(0.93);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .empty {
+      text-align: center;
+      padding: 40px;
+      color: #bbb;
+      font-size: 0.95rem;
+    }
+  </style>
+  <body>
+    <div class="container">
+      <div class="form-card">
+        <h2 id="formTitle">Новий коментар</h2>
+        <input type="hidden" id="parentId" />
+        <input type="hidden" id="parentText" />
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="username">User Name *</label>
+            <input type="text" id="username" placeholder="Латиниця та цифри" />
+            <span class="error-msg" id="err-username"></span>
+          </div>
+          <div class="form-group">
+            <label for="email">E-mail *</label>
+            <input type="email" id="email" placeholder="user@example.com" />
+            <span class="error-msg" id="err-email"></span>
+          </div>
+          <div class="form-group">
+            <label for="homepage">Home page</label>
+            <input type="url" id="homepage" placeholder="https://..." />
+            <span class="error-msg" id="err-homepage"></span>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 10px">
+          <label>Text *</label>
+          <div class="toolbar">
+            <button type="button" onclick="wrapTag('i')"><i>I</i></button>
+            <button type="button" onclick="wrapTag('strong')"><b>B</b></button>
+            <button type="button" onclick="wrapTag('code')">&#60;&#62;</button>
+            <button type="button" onclick="insertLink()">🔗 a</button>
+          </div>
+          <textarea id="text" placeholder="Ваш коментар..."></textarea>
+          <span class="error-msg" id="err-text"></span>
+        </div>
+
+        <div class="captcha-row">
+          <img
+            id="captchaImg"
+            src=""
+            alt="captcha"
+            title="Клікніть щоб оновити"
+            onclick="refreshCaptcha()"
+          />
+          <div
+            class="form-group"
+            style="margin: 0; min-width: 140px; max-width: 180px"
+          >
+            <label for="captchaInput">CAPTCHA *</label>
+            <input
+              type="text"
+              id="captchaInput"
+              placeholder="Введіть символи"
+            />
+            <span class="error-msg" id="err-captcha"></span>
+          </div>
+          <input type="hidden" id="captchaKey" />
+        </div>
+
+        <div class="file-row">
+          <label class="file-label">
+            📎 Додати файл
+            <input
+              type="file"
+              id="fileInput"
+              accept=".jpg,.jpeg,.gif,.png,.txt"
+              style="display: none"
+              onchange="handleFile(this)"
+            />
+          </label>
+          <span class="file-name" id="fileName">Файл не вибрано</span>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-secondary" onclick="previewComment()">
+            👁 Прев'ю
+          </button>
+          <button class="btn btn-primary" onclick="submitComment()">
+            Відправити
+          </button>
+          <button
+            class="btn btn-secondary"
+            id="cancelReplyBtn"
+            style="display: none"
+            onclick="cancelReply()"
+          >
+            ✕ Скасувати відповідь
+          </button>
+        </div>
+
+        <div class="preview-box" id="previewBox">
+          <div class="preview-label">Прев'ю</div>
+          <div id="previewContent"></div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <label>Сортувати:</label>
+        <select id="ordering" onchange="loadComments(1)">
+          <option value="-created_at">Дата ↓</option>
+          <option value="created_at">Дата ↑</option>
+          <option value="user__username">Ім'я A–Z</option>
+          <option value="-user__username">Ім'я Z–A</option>
+          <option value="user__email">Email A–Z</option>
+          <option value="-user__email">Email Z–A</option>
+        </select>
+        <span id="wsStatus" class="ws-badge off">● офлайн</span>
+      </div>
+
+      <div class="comments-wrap" id="commentsList">
+        <div class="empty">Завантаження...</div>
+      </div>
+
+      <div class="pagination" id="pagination"></div>
+    </div>
+
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+      <span class="lightbox-close">×</span>
+      <img id="lightboxImg" src="" alt="" />
+    </div>
+  </body>
+  <script>
+    const API = "/api";
+    const WS_URL = `ws://${location.host}/ws/comments/`;
+
+    let currentPage = 1;
+    let totalPages = 1;
+    let ws = null;
+
+    function connectWS() {
+      ws = new WebSocket(WS_URL);
+      const badge = document.getElementById("wsStatus");
+      ws.onopen = () => {
+        badge.textContent = "● онлайн";
+        badge.className = "ws-badge on";
+      };
+      ws.onclose = () => {
+        badge.textContent = "● офлайн";
+        badge.className = "ws-badge off";
+        setTimeout(connectWS, 3000);
+      };
+      ws.onmessage = (e) => {
+        const data = JSON.parse(e.data);
+        if (data.error) return;
+        if (currentPage === 1 && !data.parent) prependComment(data);
+      };
+    }
+
+    async function loadComments(page = 1) {
+      currentPage = page;
+      const ordering = document.getElementById("ordering").value;
+      const res = await fetch(
+        `${API}/comments/?page=${page}&ordering=${ordering}`,
+      );
+      const data = await res.json();
+      totalPages = Math.ceil((data.count || 0) / 25);
+      renderComments(data.results || []);
+      renderPagination();
+    }
+
+    function renderComments(list) {
+      const el = document.getElementById("commentsList");
+      if (!list.length) {
+        el.innerHTML =
+          '<div class="empty">Коментарів ще немає. Будьте першим!</div>';
+        return;
+      }
+      el.innerHTML = list.map((c) => commentHTML(c)).join("");
+    }
+
+    function commentHTML(c, isNested = false) {
+      const date = new Date(c.created_at).toLocaleString("uk-UA", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      const initial = (c.user.username[0] || "?").toUpperCase();
+      const quoteBlock =
+        isNested && c.parent_text
+          ? `<div class="quote">${esc(c.parent_text)}</div>`
+          : "";
+      const imgBlock = c.image
+        ? `<div class="comment-image"><img src="${c.image}" alt="" onclick="openLightbox('${c.image}')"></div>`
+        : "";
+      const fileBlock = c.txt_file
+        ? `<div class="comment-file"><a href="${c.txt_file}" target="_blank">📄 Переглянути файл</a></div>`
+        : "";
+      const replies = (c.replies || [])
+        .map((r) => commentHTML(r, true))
+        .join("");
+      const repliesBlock = replies
+        ? `<div class="replies">${replies}</div>`
+        : "";
+
+      return `
+  <div class="comment" id="c-${c.id}">
+    <div class="comment-header">
+      <div class="avatar">${initial}</div>
+      <div class="meta">
+        <span class="author">${esc(c.user.username)}</span>
+        <span class="date">${date}</span>
+      </div>
+      <div class="comment-actions">
+        <div class="action-icon" title="Цитувати" onclick="setReply(${c.id}, '${esc(c.user.username)}', \`${esc(c.text).substring(0, 80)}\`)">❝</div>
+        <div class="action-icon" title="Поскаржитись">⚑</div>
+        <div class="action-icon" title="Поділитись">⤴</div>
+      </div>
+      <div class="vote">
+        <button onclick="vote(${c.id}, 1)">↑</button>
+        0
+        <button onclick="vote(${c.id}, -1)">↓</button>
+      </div>
+    </div>
+    ${quoteBlock}
+    <div class="comment-text">${c.text}</div>
+    ${imgBlock}
+    ${fileBlock}
+    <button class="reply-btn" onclick="setReply(${c.id}, '${esc(c.user.username)}', \`${esc(c.text).substring(0, 80)}\`)">↩ Відповісти</button>
+    ${repliesBlock}
+  </div>`;
+    }
+
+    function prependComment(c) {
+      const wrap = document.getElementById("commentsList");
+      const empty = wrap.querySelector(".empty");
+      if (empty) empty.remove();
+      wrap.insertAdjacentHTML("afterbegin", commentHTML(c));
+    }
+
+    function renderPagination() {
+      const el = document.getElementById("pagination");
+      if (totalPages <= 1) {
+        el.innerHTML = "";
+        return;
+      }
+      let html = "";
+      if (currentPage > 1)
+        html += `<button onclick="loadComments(${currentPage - 1})">‹</button>`;
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="${i === currentPage ? "active" : ""}" onclick="loadComments(${i})">${i}</button>`;
+      }
+      if (currentPage < totalPages)
+        html += `<button onclick="loadComments(${currentPage + 1})">›</button>`;
+      el.innerHTML = html;
+    }
+
+    function setReply(id, username, snippet = "") {
+      document.getElementById("parentId").value = id;
+      document.getElementById("parentText").value = snippet;
+      document.getElementById("formTitle").textContent =
+        `Відповідь для ${username}`;
+      document.getElementById("cancelReplyBtn").style.display = "inline-block";
+      document.getElementById("text").focus();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function cancelReply() {
+      document.getElementById("parentId").value = "";
+      document.getElementById("parentText").value = "";
+      document.getElementById("formTitle").textContent = "Новий коментар";
+      document.getElementById("cancelReplyBtn").style.display = "none";
+    }
+
+    function vote(id, dir) {}
+
+    function clearErrors() {
+      document
+        .querySelectorAll(".error-msg")
+        .forEach((el) => (el.textContent = ""));
+      document
+        .querySelectorAll(".error")
+        .forEach((el) => el.classList.remove("error"));
+    }
+
+    function setError(field, msg) {
+      const errEl = document.getElementById(`err-${field}`);
+      if (errEl) errEl.textContent = msg;
+      const input =
+        document.getElementById(field) ||
+        document.getElementById(`${field}Input`);
+      if (input) input.classList.add("error");
+    }
+
+    function validateForm() {
+      clearErrors();
+      let ok = true;
+      const username = document.getElementById("username").value.trim();
+      if (!username) {
+        setError("username", "Обов'язкове поле");
+        ok = false;
+      } else if (!/^[a-zA-Z0-9]+$/.test(username)) {
+        setError("username", "Тільки латиниця та цифри");
+        ok = false;
+      }
+      const email = document.getElementById("email").value.trim();
+      if (!email) {
+        setError("email", "Обов'язкове поле");
+        ok = false;
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        setError("email", "Невірний формат");
+        ok = false;
+      }
+      const hp = document.getElementById("homepage").value.trim();
+      if (hp && !/^https?:\/\/.+/.test(hp)) {
+        setError("homepage", "Невірний URL");
+        ok = false;
+      }
+      const text = document.getElementById("text").value.trim();
+      if (!text) {
+        setError("text", "Обов'язкове поле");
+        ok = false;
+      }
+      const cap = document.getElementById("captchaInput").value.trim();
+      if (!cap) {
+        setError("captcha", "Обов'язкове поле");
+        ok = false;
+      }
+      return ok;
+    }
+
+    async function submitComment() {
+      if (!validateForm()) return;
+      const fd = new FormData();
+      fd.append(
+        "user_data.username",
+        document.getElementById("username").value.trim(),
+      );
+      fd.append(
+        "user_data.email",
+        document.getElementById("email").value.trim(),
+      );
+      const hp = document.getElementById("homepage").value.trim();
+      if (hp) fd.append("user_data.home_page", hp);
+      fd.append("text", document.getElementById("text").value.trim());
+      const pid = document.getElementById("parentId").value;
+      if (pid) fd.append("parent", pid);
+      fd.append("captcha_key", document.getElementById("captchaKey").value);
+      fd.append(
+        "captcha_value",
+        document.getElementById("captchaInput").value.trim(),
+      );
+      const file = document.getElementById("fileInput").files[0];
+      if (file)
+        fd.append(/\.txt$/i.test(file.name) ? "txt_file" : "image", file);
+      const res = await fetch(`${API}/comments/`, { method: "POST", body: fd });
+      const data = await res.json();
+      if (!res.ok) {
+        Object.entries(data).forEach(([k, v]) =>
+          setError(k.replace("user_data.", ""), Array.isArray(v) ? v[0] : v),
+        );
+        refreshCaptcha();
+        return;
+      }
+      resetForm();
+      if (!pid) loadComments(1);
+      refreshCaptcha();
+    }
+
+    function resetForm() {
+      ["username", "email", "homepage", "text", "captchaInput"].forEach(
+        (id) => (document.getElementById(id).value = ""),
+      );
+      document.getElementById("fileInput").value = "";
+      document.getElementById("fileName").textContent = "Файл не вибрано";
+      document.getElementById("previewBox").classList.remove("visible");
+      cancelReply();
+    }
+
+    function previewComment() {
+      const text = document.getElementById("text").value || "(порожньо)";
+      const name = document.getElementById("username").value || "Анонім";
+      document.getElementById("previewContent").innerHTML =
+        `<strong>${esc(name)}</strong> · зараз<br><br>${text}`;
+      document.getElementById("previewBox").classList.add("visible");
+    }
+
+    function wrapTag(tag) {
+      const ta = document.getElementById("text");
+      const s = ta.selectionStart,
+        e = ta.selectionEnd;
+      const sel = ta.value.substring(s, e);
+      ta.value =
+        ta.value.substring(0, s) +
+        `<${tag}>${sel}</${tag}>` +
+        ta.value.substring(e);
+      ta.focus();
+      ta.selectionStart = s + tag.length + 2;
+      ta.selectionEnd = s + tag.length + 2 + sel.length;
+    }
+
+    function insertLink() {
+      const href = prompt("URL посилання:");
+      if (!href) return;
+      const title = prompt("Заголовок (title):") || "";
+      const ta = document.getElementById("text");
+      const s = ta.selectionStart,
+        e = ta.selectionEnd;
+      const sel = ta.value.substring(s, e) || "посилання";
+      ta.value =
+        ta.value.substring(0, s) +
+        `<a href="${href}" title="${title}">${sel}</a>` +
+        ta.value.substring(e);
+    }
+
+    function handleFile(input) {
+      const file = input.files[0];
+      if (!file) return;
+      if (!/\.(jpg|jpeg|gif|png|txt)$/i.test(file.name)) {
+        alert("Дозволені: JPG, GIF, PNG, TXT");
+        input.value = "";
+        return;
+      }
+      if (/\.txt$/i.test(file.name) && file.size > 100 * 1024) {
+        alert("TXT файл не може перевищувати 100 КБ");
+        input.value = "";
+        return;
+      }
+      document.getElementById("fileName").textContent = file.name;
+    }
+
+    async function refreshCaptcha() {
+      try {
+        const res = await fetch(`${API}/captcha/`);
+        const data = await res.json();
+        document.getElementById("captchaImg").src = data.image_url;
+        document.getElementById("captchaKey").value = data.key;
+      } catch {
+        document.getElementById("captchaImg").src = "/captcha/image/";
+      }
+    }
+
+    function openLightbox(src) {
+      document.getElementById("lightboxImg").src = src;
+      document.getElementById("lightbox").classList.add("open");
+    }
+
+    function closeLightbox() {
+      document.getElementById("lightbox").classList.remove("open");
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeLightbox();
+    });
+
+    function esc(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/`/g, "&#96;");
+    }
+
+    loadComments(1);
+    refreshCaptcha();
+    connectWS();
+  </script>
+</html>

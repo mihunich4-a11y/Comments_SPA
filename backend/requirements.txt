@@ -8,7 +8,7 @@ channels-redis==4.2
 daphne==4.1
 celery==5.4
 redis==5.0
-psycopg2==2.9
+psycopg2-binary>=2.9
 Pillow==10.3
 bleach==6.1
 djangorestframework-simplejwt==5.3

@@ -4,9 +4,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "change-me-in-production")
-
 DEBUG = os.environ.get("DEBUG", "True") == "True"
-
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost 127.0.0.1").split()
 
 INSTALLED_APPS = [
@@ -20,13 +18,11 @@ INSTALLED_APPS = [
     "django_filters",
     "captcha",
     "channels",
-    "corsheaders",
     "comments",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -102,9 +98,7 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": __import__("datetime").timedelta(days=7),
 }
 
-CORS_ALLOWED_ORIGINS = os.environ.get(
-    "CORS_ALLOWED_ORIGINS", "http://localhost:5173 http://localhost:3000"
-).split()
+CORS_ALLOW_ALL_ORIGINS = True
 
 LANGUAGE_CODE = "uk"
 TIME_ZONE = "Europe/Kyiv"

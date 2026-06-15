@@ -13,3 +13,4 @@ Pillow==10.3
 bleach==6.1
 djangorestframework-simplejwt==5.3.1
 setuptools
+whitenoise

@@ -1,4 +1,8 @@
+from captcha.helpers import captcha_image_url
+from captcha.models import CaptchaStore
 from django.db.models import Count
+from django.http import JsonResponse
+from django.views.generic import TemplateView
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics
 from rest_framework.response import Response
@@ -17,13 +21,16 @@ class CommentListCreateView(generics.ListCreateAPIView):
         return (
             Comment.objects.filter(parent=None)
             .select_related("user")
+            .prefetch_related(
+                "replies__user",
+                "replies__replies__user",
+                "replies__replies__replies__user",
+            )
             .annotate(replies_count=Count("replies"))
         )
 
     def get_serializer_class(self):
-        if self.request.method == "POST":
-            return CommentSerializer
-        return CommentListSerializer
+        return CommentSerializer
 
 
 class CommentDetailView(generics.RetrieveAPIView):
@@ -44,3 +51,17 @@ class CommentRepliesView(APIView):
         )
         serializer = CommentSerializer(comment, context={"request": request})
         return Response(serializer.data["replies"])
+
+
+class IndexView(TemplateView):
+    template_name = "index.html"
+
+
+def captcha_refresh(request):
+    new_key = CaptchaStore.generate_key()
+    return JsonResponse(
+        {
+            "key": new_key,
+            "image_url": captcha_image_url(new_key),
+        }
+    )

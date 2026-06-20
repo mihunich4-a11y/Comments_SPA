@@ -125,3 +125,4 @@ User
 Comment
   id, user_id (FK → User), parent_id (FK → Comment), text, image, txt_file, created_at
 ```
+https://commentsspa-production.up.railway.app/api/comments/
